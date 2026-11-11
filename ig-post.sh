@@ -1,6 +1,7 @@
 #!/bin/bash
 # Publish one Instagram post to @tinocokids.app: ./ig-post.sh posts/<name>.jpg captions/<name>.txt
 # Reel: ./ig-post.sh reels/<name>.mp4 captions/<name>.txt (TRIAL=1: trial Reel, needs more followers than we have yet)
+# Story: STORY=1 ./ig-post.sh reels/<name>.mp4 captions/<name>.txt (the caption is not shown on Stories)
 # Carousel: ./ig-post.sh posts/<name>-1.jpg captions/<name>.txt posts/<name>-2.jpg ... (2-10 images)
 # The JPEG is pushed to this public repo first, because Instagram downloads it from a public URL.
 # Token: ~/tinoco-keys/instagram-token (never printed; curl reads it from the file).
@@ -25,7 +26,8 @@ if (( ${#MORE[@]} )); then
   C=$(api -d media_type=CAROUSEL --data-urlencode "children=$KIDS" --data-urlencode "caption@$CAP" "$API/$IG/media" | field id)
 elif [[ $IMG == *.mp4 ]]; then
   TRIALARG=(); [[ ${TRIAL:-} == 1 ]] && TRIALARG=(--data-urlencode 'trial_params={"graduation_strategy":"SS_PERFORMANCE"}')
-  C=$(api -d media_type=REELS --data-urlencode "video_url=$(raw "$IMG")" --data-urlencode "caption@$CAP" ${TRIALARG[@]+"${TRIALARG[@]}"} "$API/$IG/media" | field id)
+  KIND=REELS; [[ ${STORY:-} == 1 ]] && { KIND=STORIES; TRIALARG=(); }
+  C=$(api -d media_type=$KIND --data-urlencode "video_url=$(raw "$IMG")" --data-urlencode "caption@$CAP" ${TRIALARG[@]+"${TRIALARG[@]}"} "$API/$IG/media" | field id)
 else
   C=$(api --data-urlencode "image_url=$(raw "$IMG")" --data-urlencode "caption@$CAP" ${ALTARG[@]+"${ALTARG[@]}"} "$API/$IG/media" | field id)
 fi
