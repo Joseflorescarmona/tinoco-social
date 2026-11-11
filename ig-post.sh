@@ -1,5 +1,6 @@
 #!/bin/bash
 # Publish one Instagram post to @tinocokids.app: ./ig-post.sh posts/<name>.jpg captions/<name>.txt
+# Reel: ./ig-post.sh reels/<name>.mp4 captions/<name>.txt (TRIAL=1: trial Reel, needs more followers than we have yet)
 # Carousel: ./ig-post.sh posts/<name>-1.jpg captions/<name>.txt posts/<name>-2.jpg ... (2-10 images)
 # The JPEG is pushed to this public repo first, because Instagram downloads it from a public URL.
 # Token: ~/tinoco-keys/instagram-token (never printed; curl reads it from the file).
@@ -7,7 +8,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 IMG=$1; CAP=$2; MORE=("${@:3}"); TOK=~/tinoco-keys/instagram-token
 IG=17841474085225989; API=https://graph.facebook.com/v23.0
-[[ $IMG == *.jpg && -f $IMG && ${#MORE[@]} -le 9 && -f $CAP && -f $TOK ]] || { echo "usage: $0 posts/x.jpg captions/x.txt (and token file)"; exit 1; }
+[[ $IMG == *.jpg || $IMG == *.mp4 ]] && [[ -f $IMG && ${#MORE[@]} -le 9 && -f $CAP && -f $TOK ]] || { echo "usage: $0 posts/x.jpg captions/x.txt (and token file)"; exit 1; }
 api(){ curl -sS --data-urlencode "access_token@$TOK" "$@"; }
 field(){ python3 -c "import sys,json;d=json.load(sys.stdin);print(d.get('$1') or ''); e=d.get('error'); e and sys.exit('API error: '+e.get('message',''))"; }
 
@@ -22,6 +23,9 @@ if (( ${#MORE[@]} )); then
   KIDS=""; for f in "$IMG" "${MORE[@]}"; do
     K=$(api --data-urlencode "image_url=$(raw "$f")" -d is_carousel_item=true ${ALTARG[@]+"${ALTARG[@]}"} "$API/$IG/media" | field id); ready "$K"; KIDS+=${KIDS:+,}$K; done
   C=$(api -d media_type=CAROUSEL --data-urlencode "children=$KIDS" --data-urlencode "caption@$CAP" "$API/$IG/media" | field id)
+elif [[ $IMG == *.mp4 ]]; then
+  TRIALARG=(); [[ ${TRIAL:-} == 1 ]] && TRIALARG=(--data-urlencode 'trial_params={"graduation_strategy":"SS_PERFORMANCE"}')
+  C=$(api -d media_type=REELS --data-urlencode "video_url=$(raw "$IMG")" --data-urlencode "caption@$CAP" ${TRIALARG[@]+"${TRIALARG[@]}"} "$API/$IG/media" | field id)
 else
   C=$(api --data-urlencode "image_url=$(raw "$IMG")" --data-urlencode "caption@$CAP" ${ALTARG[@]+"${ALTARG[@]}"} "$API/$IG/media" | field id)
 fi
