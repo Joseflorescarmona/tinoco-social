@@ -29,3 +29,8 @@ Source: `tinocokids.com/api/stats` (anonymous counts; a session is one game open
 
 - Fix the first screen so fewer players leave within seconds, then check whether quick exits drop below 56%.
 - Re-check the stats after each Reel, and add the US share and the tester count here.
+
+## Log
+
+- 24 Nov: US players came back the day after the draw Reel (23 Nov, tester call), with no new post. That's the first US visits on a non-post day.
+- 25 Nov 02:00 Spain: pom-pom Reel (English, aimed at speech therapists, with tester call). This tests the US-evening slot. Compare US visits with the 21:00 posts.
