@@ -36,3 +36,4 @@ Source: `tinocokids.com/api/stats` (anonymous counts; a session is one game open
 - 25 Nov 02:00 Spain: pom-pom Reel (English, aimed at speech therapists, with tester call). This tests the US-evening slot. Compare US visits with the 21:00 posts.
 - 25 Nov: Play Console shows 10/12 testers opted in (Google Group: 16 members). Posted a 10/12 Story at 19:15. The pom-pom Reel at 00:01 got 0 likes after 19 hours, so the US-midnight slot is a flop. Followers 180 → 176.
 - Vercel: Analytics is off and Hobby keeps logs for only about 1 hour, so countries come only from /api/stats.
+- 27 Nov: Play Console 11/12 testers. Posted the "Just 1 more" Story and the Spanish shop Reel at 07:15. Followers 179. US visits were 0 on 25–26 Nov (no US post), which confirms that visits only come on post days.
